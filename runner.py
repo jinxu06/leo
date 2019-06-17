@@ -159,7 +159,8 @@ def construct_graph(outer_model_config):
 def run_training_loop(checkpoint_path):
   print("Begin ***********")
   print(tf.logging.get_verbosity())
-  quit()
+  tf.logging.set_verbosity(tf.logging.DEBUG)
+  print(tf.logging.get_verbosity())
   """Runs the training loop, either saving a checkpoint or evaluating it."""
   outer_model_config = config.get_outer_model_config()
   tf.logging.info("outer_model_config: {}".format(outer_model_config))
