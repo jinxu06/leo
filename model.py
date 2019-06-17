@@ -121,7 +121,7 @@ class LEO(snt.AbstractModule):
 
     # regularization_penalty = (
     #    self._l2_regularization + self._decoder_orthogonality_reg)
-    regularization_penalty = tf.constant(0)
+    regularization_penalty = tf.constant(0, dtype=self._float_dtype)
 
     batch_val_loss = tf.reduce_mean(val_loss)
     batch_val_accuracy = tf.reduce_mean(val_accuracy)
