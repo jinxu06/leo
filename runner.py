@@ -157,6 +157,7 @@ def construct_graph(outer_model_config):
 
 
 def run_training_loop(checkpoint_path):
+  print("Begin ***********")
   """Runs the training loop, either saving a checkpoint or evaluating it."""
   outer_model_config = config.get_outer_model_config()
   tf.logging.info("outer_model_config: {}".format(outer_model_config))
@@ -165,6 +166,7 @@ def run_training_loop(checkpoint_path):
 
   num_steps_limit = outer_model_config["num_steps_limit"]
   best_metavalid_accuracy = 0.
+  print("I am at Loc 1")
 
   with tf.train.MonitoredTrainingSession(
       checkpoint_dir=checkpoint_path,
@@ -172,6 +174,7 @@ def run_training_loop(checkpoint_path):
       log_step_count_steps=FLAGS.checkpoint_steps,
       save_checkpoint_steps=FLAGS.checkpoint_steps,
       summary_dir=checkpoint_path) as sess:
+    print(FLAGS.evaluation_mode)
     if not FLAGS.evaluation_mode:
       global_step_ev = sess.run(global_step)
       while global_step_ev < num_steps_limit:
