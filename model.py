@@ -134,11 +134,14 @@ class LEO(snt.AbstractModule):
           dtype=self._float_dtype,
           initializer=tf.constant_initializer(self._inner_lr_init))
     starting_latents = latents
-    loss, _ = self.forward_decoder(data, latents)
-    for _ in range(self._inner_unroll_length):
-      loss_grad = tf.gradients(loss, latents)  # dLtrain/dz
-      latents -= inner_lr * loss_grad[0]
-      loss, classifier_weights = self.forward_decoder(data, latents)
+
+    # loss, _ = self.forward_decoder(data, latents)
+    # for _ in range(self._inner_unroll_length):
+    #   loss_grad = tf.gradients(loss, latents)  # dLtrain/dz
+    #   latents -= inner_lr * loss_grad[0]
+    #   loss, classifier_weights = self.forward_decoder(data, latents)
+    loss, classifier_weights = self.forward_decoder(data, latents)
+
 
     if self.is_meta_training:
       encoder_penalty = tf.losses.mean_squared_error(
