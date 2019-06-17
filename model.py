@@ -107,8 +107,9 @@ class LEO(snt.AbstractModule):
     self.save_problem_instance_stats(data.tr_input)
 
     latents, kl = self.forward_encoder(data)
-    tr_loss, adapted_classifier_weights, encoder_penalty = self.leo_inner_loop(
-        data, latents)
+    # tr_loss, adapted_classifier_weights, encoder_penalty = self.leo_inner_loop(
+    #     data, latents)
+    tr_loss, adapted_classifier_weights = self.forward_decoder(data, latents)
 
     # val_loss, val_accuracy = self.finetuning_inner_loop(
     #     data, tr_loss, adapted_classifier_weights)
