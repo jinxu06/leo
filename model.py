@@ -267,8 +267,9 @@ class LEO(snt.AbstractModule):
     stddev -= (1. - stddev_offset)
     stddev = tf.maximum(stddev, 1e-10)
     distribution = tfp.distributions.Normal(loc=means, scale=stddev)
-    if not self.is_meta_training:
-      return means, tf.constant(0., dtype=self._float_dtype)
+    # if not self.is_meta_training:
+    #   return means, tf.constant(0., dtype=self._float_dtype)
+    return means, tf.constant(0., dtype=self._float_dtype)
 
     samples = distribution.sample()
     kl_divergence = self.kl_divergence(samples, distribution)
