@@ -22,13 +22,12 @@ import functools
 import os
 import pickle
 
-import logging
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '0'
-logging.getLogger("tensorflow").setLevel(logging.WARNING)
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 from absl import flags
 from six.moves import zip
 import tensorflow as tf
+tf.logging.set_verbosity(tf.logging.DEBUG)
 
 import config
 import data
@@ -157,10 +156,6 @@ def construct_graph(outer_model_config):
 
 
 def run_training_loop(checkpoint_path):
-  print("Begin ***********")
-  print(tf.logging.get_verbosity())
-  tf.logging.set_verbosity(tf.logging.DEBUG)
-  print(tf.logging.get_verbosity())
   """Runs the training loop, either saving a checkpoint or evaluating it."""
   outer_model_config = config.get_outer_model_config()
   tf.logging.info("outer_model_config: {}".format(outer_model_config))
@@ -169,7 +164,6 @@ def run_training_loop(checkpoint_path):
 
   num_steps_limit = outer_model_config["num_steps_limit"]
   best_metavalid_accuracy = 0.
-  print("I am at Loc 1")
 
   with tf.train.MonitoredTrainingSession(
       checkpoint_dir=checkpoint_path,
@@ -177,9 +171,11 @@ def run_training_loop(checkpoint_path):
       log_step_count_steps=FLAGS.checkpoint_steps,
       save_checkpoint_steps=FLAGS.checkpoint_steps,
       summary_dir=checkpoint_path) as sess:
-    print(FLAGS.evaluation_mode)
     if not FLAGS.evaluation_mode:
       global_step_ev = sess.run(global_step)
+      print("*******")
+      print(global_step_v)
+      print(num_steps_limit)
       while global_step_ev < num_steps_limit:
         if global_step_ev % FLAGS.checkpoint_steps == 0:
           # Just after saving checkpoint, calculate accuracy 10 times and save
