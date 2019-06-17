@@ -173,9 +173,6 @@ def run_training_loop(checkpoint_path):
       summary_dir=checkpoint_path) as sess:
     if not FLAGS.evaluation_mode:
       global_step_ev = sess.run(global_step)
-      print("*******")
-      print(global_step_ev)
-      print(num_steps_limit)
       while global_step_ev < num_steps_limit:
         if global_step_ev % FLAGS.checkpoint_steps == 0:
           # Just after saving checkpoint, calculate accuracy 10 times and save
