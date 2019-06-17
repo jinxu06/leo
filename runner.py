@@ -22,6 +22,10 @@ import functools
 import os
 import pickle
 
+import logging
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '0'
+logging.getLogger("tensorflow").setLevel(logging.WARNING)
+
 from absl import flags
 from six.moves import zip
 import tensorflow as tf
