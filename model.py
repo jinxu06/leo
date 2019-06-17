@@ -118,8 +118,10 @@ class LEO(snt.AbstractModule):
     # The l2 regularization is is already added to the graph when constructing
     # the snt.Linear modules. We pass the orthogonality regularizer separately,
     # because it is not used in self.grads_and_vars.
-    regularization_penalty = (
-        self._l2_regularization + self._decoder_orthogonality_reg)
+
+    # regularization_penalty = (
+    #    self._l2_regularization + self._decoder_orthogonality_reg)
+    regularization_penalty = tf.constant(0)
 
     batch_val_loss = tf.reduce_mean(val_loss)
     batch_val_accuracy = tf.reduce_mean(val_accuracy)
@@ -135,13 +137,11 @@ class LEO(snt.AbstractModule):
           initializer=tf.constant_initializer(self._inner_lr_init))
     starting_latents = latents
 
-    # loss, _ = self.forward_decoder(data, latents)
-    # for _ in range(self._inner_unroll_length):
-    #   loss_grad = tf.gradients(loss, latents)  # dLtrain/dz
-    #   latents -= inner_lr * loss_grad[0]
-    #   loss, classifier_weights = self.forward_decoder(data, latents)
-    loss, classifier_weights = self.forward_decoder(data, latents)
-
+    loss, _ = self.forward_decoder(data, latents)
+    for _ in range(self._inner_unroll_length):
+      loss_grad = tf.gradients(loss, latents)  # dLtrain/dz
+      latents -= inner_lr * loss_grad[0]
+      loss, classifier_weights = self.forward_decoder(data, latents)
 
     if self.is_meta_training:
       encoder_penalty = tf.losses.mean_squared_error(
