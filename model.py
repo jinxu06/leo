@@ -110,11 +110,15 @@ class LEO(snt.AbstractModule):
     tr_loss, adapted_classifier_weights, encoder_penalty = self.leo_inner_loop(
         data, latents)
 
-    val_loss, val_accuracy = self.finetuning_inner_loop(
-        data, tr_loss, adapted_classifier_weights)
+    # val_loss, val_accuracy = self.finetuning_inner_loop(
+    #     data, tr_loss, adapted_classifier_weights)
+
+    val_loss, val_accuracy = self.calculate_inner_loss(
+        data.val_input, data.val_output, adapted_classifier_weights)
 
     val_loss += self._kl_weight * kl
-    val_loss += self._encoder_penalty_weight * encoder_penalty
+    # val_loss += self._encoder_penalty_weight * encoder_penalty
+
     # The l2 regularization is is already added to the graph when constructing
     # the snt.Linear modules. We pass the orthogonality regularizer separately,
     # because it is not used in self.grads_and_vars.
