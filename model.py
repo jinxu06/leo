@@ -107,26 +107,22 @@ class LEO(snt.AbstractModule):
     self.save_problem_instance_stats(data.tr_input)
 
     latents, kl = self.forward_encoder(data)
-    # tr_loss, adapted_classifier_weights, encoder_penalty = self.leo_inner_loop(
-    #     data, latents)
-    tr_loss, adapted_classifier_weights = self.forward_decoder(data, latents)
+    tr_loss, adapted_classifier_weights, encoder_penalty = self.leo_inner_loop(
+        data, latents)
+    #  tr_loss, adapted_classifier_weights = self.forward_decoder(data, latents)
 
-    # val_loss, val_accuracy = self.finetuning_inner_loop(
-    #     data, tr_loss, adapted_classifier_weights)
+    val_loss, val_accuracy = self.finetuning_inner_loop(
+        data, tr_loss, adapted_classifier_weights)
+    # val_loss, val_accuracy = self.calculate_inner_loss(
+    #     data.val_input, data.val_output, adapted_classifier_weights)
 
-    val_loss, val_accuracy = self.calculate_inner_loss(
-        data.val_input, data.val_output, adapted_classifier_weights)
+    val_loss += self._kl_weight * kl
+    val_loss += self._encoder_penalty_weight * encoder_penalty
 
-    # val_loss += self._kl_weight * kl
-    # val_loss += self._encoder_penalty_weight * encoder_penalty
 
-    # The l2 regularization is is already added to the graph when constructing
-    # the snt.Linear modules. We pass the orthogonality regularizer separately,
-    # because it is not used in self.grads_and_vars.
-
-    # regularization_penalty = (
-    #    self._l2_regularization + self._decoder_orthogonality_reg)
-    regularization_penalty = tf.constant(0, dtype=self._float_dtype)
+    regularization_penalty = (
+       self._l2_regularization + self._decoder_orthogonality_reg)
+    # regularization_penalty = tf.constant(0, dtype=self._float_dtype)
 
     batch_val_loss = tf.reduce_mean(val_loss)
     batch_val_accuracy = tf.reduce_mean(val_accuracy)
@@ -267,9 +263,9 @@ class LEO(snt.AbstractModule):
     stddev -= (1. - stddev_offset)
     stddev = tf.maximum(stddev, 1e-10)
     distribution = tfp.distributions.Normal(loc=means, scale=stddev)
-    # if not self.is_meta_training:
-    #   return means, tf.constant(0., dtype=self._float_dtype)
-    return means, tf.constant(0., dtype=self._float_dtype)
+    if not self.is_meta_training:
+      return means, tf.constant(0., dtype=self._float_dtype)
+    # return means, tf.constant(0., dtype=self._float_dtype)
 
     samples = distribution.sample()
     kl_divergence = self.kl_divergence(samples, distribution)

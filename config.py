@@ -54,12 +54,8 @@ flags.DEFINE_float("dropout_rate", 0.5, "Rate of dropout: probability of "
 flags.DEFINE_float(
     "kl_weight", 1e-3, "The weight measuring importance of the "
     "KL in the final loss. β in the paper.")
-# flags.DEFINE_float(
-#     "encoder_penalty_weight", 1e-9, "The weight measuring "
-#     "importance of the encoder penalty in the final loss. γ in "
-#     "the paper.")
 flags.DEFINE_float(
-    "encoder_penalty_weight", 0.0, "The weight measuring "
+    "encoder_penalty_weight", 1e-9, "The weight measuring "
     "importance of the encoder penalty in the final loss. γ in "
     "the paper.")
 flags.DEFINE_float("l2_penalty_weight", 1e-8, "The weight measuring the "
