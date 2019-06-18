@@ -174,7 +174,9 @@ class LEO(snt.AbstractModule):
   @snt.reuse_variables
   def forward_encoder(self, data):
     encoder_outputs = self.encoder(data.tr_input)
-    relation_network_outputs = self.relation_network(encoder_outputs)
+    # relation_network_outputs = self.relation_network(encoder_outputs)
+    relation_network_outputs = encoder_outputs
+
     latent_dist_params = self.average_codes_per_class(relation_network_outputs)
     latents, kl = self.possibly_sample(latent_dist_params)
     return latents, kl
@@ -199,7 +201,7 @@ class LEO(snt.AbstractModule):
       regularizer = tf.contrib.layers.l2_regularizer(self._l2_penalty_weight)
       initializer = tf.initializers.glorot_uniform(dtype=self._float_dtype)
       encoder_module = snt.Linear(
-          self._num_latents,
+          self._num_latents * 2,
           use_bias=False,
           regularizers={"w": regularizer},
           initializers={"w": initializer},
@@ -263,9 +265,9 @@ class LEO(snt.AbstractModule):
     stddev -= (1. - stddev_offset)
     stddev = tf.maximum(stddev, 1e-10)
     distribution = tfp.distributions.Normal(loc=means, scale=stddev)
-    if not self.is_meta_training:
-      return means, tf.constant(0., dtype=self._float_dtype)
-    # return means, tf.constant(0., dtype=self._float_dtype)
+    # if not self.is_meta_training:
+    #   return means, tf.constant(0., dtype=self._float_dtype)
+    return means, tf.constant(0., dtype=self._float_dtype)
 
     samples = distribution.sample()
     kl_divergence = self.kl_divergence(samples, distribution)
