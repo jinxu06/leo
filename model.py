@@ -117,12 +117,12 @@ class LEO(snt.AbstractModule):
     #     data.val_input, data.val_output, adapted_classifier_weights)
 
     val_loss += self._kl_weight * kl
-    val_loss += self._encoder_penalty_weight * encoder_penalty
+    # val_loss += self._encoder_penalty_weight * encoder_penalty
 
 
-    regularization_penalty = (
-       self._l2_regularization + self._decoder_orthogonality_reg)
-    # regularization_penalty = tf.constant(0, dtype=self._float_dtype)
+    # regularization_penalty = (
+    #    self._l2_regularization + self._decoder_orthogonality_reg)
+    regularization_penalty = tf.constant(0, dtype=self._float_dtype)
 
     batch_val_loss = tf.reduce_mean(val_loss)
     batch_val_accuracy = tf.reduce_mean(val_accuracy)

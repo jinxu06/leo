@@ -182,10 +182,10 @@ def run_training_loop(checkpoint_path):
           tf.logging.info("Step: {} meta-valid accuracy: {}".format(
               global_step_ev, metavalid_accuracy_ev))
 
-          if metavalid_accuracy_ev > best_metavalid_accuracy:
-            utils.copy_checkpoint(checkpoint_path, global_step_ev,
-                                  metavalid_accuracy_ev)
-            best_metavalid_accuracy = metavalid_accuracy_ev
+          # if metavalid_accuracy_ev > best_metavalid_accuracy:
+          #   utils.copy_checkpoint(checkpoint_path, global_step_ev,
+          #                         metavalid_accuracy_ev)
+          #   best_metavalid_accuracy = metavalid_accuracy_ev
 
         _, global_step_ev, metatrain_accuracy_ev = sess.run(
             [train_op, global_step, metatrain_accuracy])
