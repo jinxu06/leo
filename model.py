@@ -177,8 +177,10 @@ class LEO(snt.AbstractModule):
     encoder_outputs = self.encoder(data.tr_input)
     # relation_network_outputs = self.relation_network(encoder_outputs)
     relation_network_outputs = encoder_outputs
-
+    print(relation_network_outputs)
     latent_dist_params = self.average_codes_per_class(relation_network_outputs)
+    print(latent_dist_params)
+    quit()
     latents, kl = self.possibly_sample(latent_dist_params)
     return latents, kl
 
