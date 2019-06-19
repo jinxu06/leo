@@ -116,7 +116,7 @@ class LEO(snt.AbstractModule):
     val_loss, val_accuracy = self.calculate_inner_loss(
         data.val_input, data.val_output, adapted_classifier_weights)
 
-    val_loss += self._kl_weight * kl
+    # val_loss += self._kl_weight * kl
     # val_loss += self._encoder_penalty_weight * encoder_penalty
 
 
@@ -174,8 +174,8 @@ class LEO(snt.AbstractModule):
   @snt.reuse_variables
   def forward_encoder(self, data):
     encoder_outputs = self.encoder(data.tr_input)
-    relation_network_outputs = self.relation_network(encoder_outputs)
-    # relation_network_outputs = encoder_outputs
+    # relation_network_outputs = self.relation_network(encoder_outputs)
+    relation_network_outputs = encoder_outputs
 
     latent_dist_params = self.average_codes_per_class(relation_network_outputs)
     latents, kl = self.possibly_sample(latent_dist_params)
@@ -201,7 +201,7 @@ class LEO(snt.AbstractModule):
       regularizer = tf.contrib.layers.l2_regularizer(self._l2_penalty_weight)
       initializer = tf.initializers.glorot_uniform(dtype=self._float_dtype)
       encoder_module = snt.Linear(
-          self._num_latents,
+          self._num_latents * 2,
           use_bias=False,
           regularizers={"w": regularizer},
           initializers={"w": initializer},
