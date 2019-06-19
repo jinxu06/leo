@@ -103,6 +103,13 @@ class LEO(snt.AbstractModule):
     """
     if isinstance(data, list):
       data = data_module.ProblemInstance(*data)
+
+    print(data.tr_input)
+    print(data.val_input)
+    print(data.tr_info)
+    print(data.val_info)
+    quit()
+
     self.is_meta_training = is_meta_training
     self.save_problem_instance_stats(data.tr_input)
 
